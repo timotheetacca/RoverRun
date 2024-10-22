@@ -53,7 +53,5 @@ int main() {
 
     t_move *allMoves = pickNineMoves(listOfMoves);
 
-    allMoves = pickNineMoves(listOfMoves);
-
     return 0;
 }
