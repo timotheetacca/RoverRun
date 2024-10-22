@@ -26,20 +26,19 @@ int main() {
     printf("\n\n\n\n\n\n\n\n\n\n\n\n");
 
     t_move f1, f2, f3, r1, tl, tr, tb;
-    f1.probability = 0.22;
-
+    f1.available_move_count = 22;
     strcpy(f1.name,"Move forward 10 m\n");
-    f2.probability = 0.15;
+    f2.available_move_count = 15;
     strcpy(f2.name,"Move forward 20 m\n");
-    f3.probability = 0.07;
+    f3.available_move_count = 7;
     strcpy(f3.name,"Move forward 30 m\n");
-    r1.probability = 0.07;
+    r1.available_move_count = 7;
     strcpy(r1.name,"Reverse 10 m\n");
-    tl.probability = 0.21;
+    tl.available_move_count = 21;
     strcpy(tl.name,"Turn a quarter turn to the left\n");
-    tr.probability = 0.21;
+    tr.available_move_count = 21;
     strcpy(tr.name,"Turn a quarter turn to the right\n");
-    tb.probability = 0.07;
+    tb.available_move_count = 7;
     strcpy(tb.name,"Turning back\n");
 
     t_move * listOfMoves = malloc(7 * sizeof (t_move));

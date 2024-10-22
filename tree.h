@@ -8,7 +8,7 @@
 
 typedef struct s_move
 {
-    double probability;
+    int available_move_count;
     char name[50];
 } t_move ;
 

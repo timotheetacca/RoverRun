@@ -1,4 +1,5 @@
 #include "tree.h"
+#include <time.h>
 
 t_move * removeCurrentNodeFromList(t_move *list, int size, int indexToDelete) {
     if (indexToDelete < 0 || indexToDelete >= size) {
@@ -28,41 +29,50 @@ t_move * createTree(t_move *list){
     }
 }
 
+t_move* pickNineMoves(t_move* listOfMoves) {
+    // Function that returns a list of nine moves picked randomly, reducing availability
 
+    srand(time(NULL));
+    t_move* result = malloc(9 * sizeof(t_move));  // To store the picked moves
 
-t_move* pickNineMoves(t_move* listOfMoves){
-    //Function that returns a list of nine moves picked randomly
-
-    t_move* result = malloc(9 * sizeof (t_move));
-
-    // Initialize the random number
-    double random_number;
-
-    //Array that contains the probability of each move
-    double listOfProbabilitiesOfEachMove[7];
-    for (int i=0; i<=6; i++){
-        listOfProbabilitiesOfEachMove[i] = listOfMoves[i].probability;
-    }
-
-    //Array that contains the cumulative probabilities. Example : [0.1, 0.15, 0.35, 0.50, 0.60, 0.85, 1.00]
-    double cumulative_probabilities[7];
-    cumulative_probabilities[0] = listOfMoves[0].probability;
-
-    for(int i = 1; i <= 6; i++){
-        cumulative_probabilities[i] = cumulative_probabilities[i-1] + listOfProbabilitiesOfEachMove[i];
-    }
-
-    //Index of the result array
     int index = 0;
+    int total_available_moves = 0;
 
-    //For loop to pick the 9 moves
-    for(int i = 0; i <= 8; i++){
-        //Generate the random number
-        random_number = (double) rand() / RAND_MAX;
+    // Calculate total available moves
+    for (int i = 0; i <= 6; i++) {
+        total_available_moves += listOfMoves[i].available_move_count;
+    }
 
-        for(int j = 0; i <= 6; i++) {
-            if (random_number <= cumulative_probabilities[j]) {
-                result[index] = listOfMoves[j];
+    printf("Total available moves at the start: %d\n", total_available_moves);
+    printf("-----------------------------------------\n");
+
+    // Repeat 9 times to pick moves
+    for (int i = 0; i < 9; i++) {
+        if (total_available_moves == 0) {
+            printf("No more available moves\n");
+            break;
+        }
+
+        // Generate a random index within the available moves
+        int random_choice = rand() % total_available_moves;
+        int cumulative_sum = 0;
+
+        printf("[Random number : %d]\n", random_choice);
+
+        // Find the move based on the random index
+        for (int j = 0; j <= 6; j++) {
+            cumulative_sum += listOfMoves[j].available_move_count;
+
+            if (random_choice < cumulative_sum) {
+                result[index] = listOfMoves[j];  // Select the move
+                listOfMoves[j].available_move_count--;  // Decrease the number of moves
+
+                printf("result[%d]: %s(Moves remaining : %d)\n",
+                       index + 1, result[index].name, listOfMoves[j].available_move_count);
+
+                total_available_moves--;  // Decrease total available moves
+                printf("Total available moves : %d\n", total_available_moves);
+                printf("-----------------------------------------\n");
                 break;
 
             }
@@ -73,3 +83,4 @@ t_move* pickNineMoves(t_move* listOfMoves){
 
     return result;
 }
+
