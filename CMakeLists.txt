@@ -15,4 +15,5 @@ add_executable(untitled1 main.c
         stack.c
         stack.h
         loc.c
-        map.c)
+        map.c
+        tree.c)
