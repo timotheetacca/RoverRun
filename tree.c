@@ -63,7 +63,6 @@ t_move* pickNineMoves(t_move* listOfMoves){
         for(int j = 0; i <= 6; i++) {
             if (random_number <= cumulative_probabilities[j]) {
                 result[index] = listOfMoves[j];
-                printf("%s", result[index].name);
                 break;
 
             }
