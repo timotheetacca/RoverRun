@@ -4,28 +4,28 @@
 #include <stdlib.h>
 #include <string.h>
 
-#endif //UNTITLED1_TREE_H
-
-typedef struct s_move
-{
+typedef struct s_move {
     int available_move_count;
     char name[50];
-} t_move ;
+} t_move;
 
-typedef struct s_node
-{
+typedef struct s_node {
     t_move move;
+    struct s_node** child_list;
     int cost;
-    struct s_node *left ;
-    struct s_node *right ;
+    int move_index;
+    int child_count;
+    int * path;
 } t_node;
 
-typedef struct s_tree
-{
-    t_node *root ;
-} t_tree ;
+typedef struct s_tree {
+    t_node* root;
+} t_tree;
 
-t_move * removeCurrentNodeFromList(t_move *list, int size, int i);
-t_move * createTree(t_move *list);
-t_move* pickNineMoves(t_move* );
+void createTree(t_node* parentNode, t_move* allMoves, int totalMoves, int currentDepth, int maxDepth);
+t_node** createChildList(t_move* allMoves, int totalMoves, int newChildCount,int currentDepth,t_node* parentNode);
+t_move* pickNineMoves(t_move* listOfMoves);
+t_node* createRootWithMoves(t_move* allMoves, int move_count);
+void printTree(t_node* node, int level);
 
+#endif // UNTITLED1_TREE_H
