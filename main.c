@@ -24,33 +24,23 @@ int main() {
     }
     displayMap(map);
     printf("\n\n\n\n\n\n\n\n\n\n\n\n");
+    t_move moves[7] = {
+            {22, "Move forward 10 m"},
+            {15, "Move forward 20 m"},
+            {7,  "Move forward 30 m"},
+            {7,  "Reverse 10 m"},
+            {21, "Turn left"},
+            {21, "Turn right"},
+            {7,  "Turn back"}
+    };
+    t_move picked_moves[9];
+    pickNMoves(moves, picked_moves, 7, 9);
 
-    t_move f1, f2, f3, r1, tl, tr, tb;
-    f1.available_move_count = 22;
-    strcpy(f1.name,"Move forward 10 m\n");
-    f2.available_move_count = 15;
-    strcpy(f2.name,"Move forward 20 m\n");
-    f3.available_move_count = 7;
-    strcpy(f3.name,"Move forward 30 m\n");
-    r1.available_move_count = 7;
-    strcpy(r1.name,"Reverse 10 m\n");
-    tl.available_move_count = 21;
-    strcpy(tl.name,"Turn a quarter turn to the left\n");
-    tr.available_move_count = 21;
-    strcpy(tr.name,"Turn a quarter turn to the right\n");
-    tb.available_move_count = 7;
-    strcpy(tb.name,"Turning back\n");
+    t_node* root = createRoot();
 
-    t_move * listOfMoves = malloc(7 * sizeof (t_move));
-    listOfMoves[0] = f1;
-    listOfMoves[1] = f2;
-    listOfMoves[2] = f3;
-    listOfMoves[3] = r1;
-    listOfMoves[4] = tl;
-    listOfMoves[5] = tr;
-    listOfMoves[6] = tb;
+    int path[9] = { -1 };
 
-    t_move *allMoves = pickNineMoves(listOfMoves);
-
+    createTree(root, picked_moves, 0, 5, path, 9);
+    printTree(root, 0);
     return 0;
 }

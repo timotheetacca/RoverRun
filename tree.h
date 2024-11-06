@@ -1,31 +1,27 @@
 #ifndef UNTITLED1_TREE_H
 #define UNTITLED1_TREE_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
-#endif //UNTITLED1_TREE_H
-
-typedef struct s_move
-{
+typedef struct {
     int available_move_count;
     char name[50];
-} t_move ;
+} t_move;
 
-typedef struct s_node
-{
+typedef struct s_node {
     t_move move;
-    int cost;
-    struct s_node *left ;
-    struct s_node *right ;
+    int fixed_index; //fixed index of the move in the pickNMoves() list
+    struct s_node** child_list;
+    int child_count;
 } t_node;
 
-typedef struct s_tree
-{
-    t_node *root ;
-} t_tree ;
+// Tree functions
+void pickNMoves(t_move* all_moves, t_node* picked_nodes, int total_moves, int n);
+t_node* createRoot();
+void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_depth, int* path, int nb_picked_moves);
+void printTree(t_node* node, int level);
 
-t_move * removeCurrentNodeFromList(t_move *list, int size, int i);
-t_move * createTree(t_move *list);
-t_move* pickNineMoves(t_move* );
-
+#endif // UNTITLED1_TREE_H
