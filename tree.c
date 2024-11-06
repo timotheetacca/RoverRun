@@ -1,130 +1,127 @@
 #include "tree.h"
-#include <time.h>
 
-t_node** createChildList(t_move* allMoves, int totalMoves, int newChildCount, int currentDepth, t_node* parentNode) {
-    newChildCount = totalMoves - 1;
-    if (newChildCount == 0 ) {
-        return NULL;
+void pickNMoves(t_move* all_moves, t_node* picked_nodes, int total_moves, int nb_of_move_to_pick) {
+    /**
+     * Picks N moves with decreasing probability each time a move is picked
+     *
+     * @param t_move* all_moves A list of all available moves for the rover
+     * @param t_node* picked_nodes An array to store the selected moves as nodes
+     * @param int total_moves The total number of available moves
+     * @param int nb_of_move_to_pick The number of moves to pick
+     * @return none
+     */
+    srand(time(NULL));
+    int total_nb_of_move_available = 0;
+
+    for (int i = 0; i < total_moves; i++) { // Count the total number of moves across all_moves
+        total_nb_of_move_available += all_moves[i].available_move_count;
     }
 
-    t_node** newChildList = (t_node**)malloc(newChildCount * sizeof(t_node*));
-    int j = 0;
-    for (int i = 0; i < totalMoves; i++) {
-        // Allocate memory for each child node
-        newChildList[j] = (t_node*)malloc(sizeof(t_node));
+    int picked_moves = 0;
+    while (picked_moves < nb_of_move_to_pick && total_nb_of_move_available > 0) {
+        int random_choice  = rand() % total_nb_of_move_available;
+        int cumulative_sum  = 0;
 
-        // Allocate memory for the child's path
-        newChildList[j]->path = (int*)malloc((currentDepth + 1) * sizeof(int));
+        for (int i = 0; i < total_moves; i++) {
+            cumulative_sum  += all_moves[i].available_move_count;
+            if (random_choice  < cumulative_sum  && all_moves[i].available_move_count > 0) {
+                picked_nodes[picked_moves].move = all_moves[i]; // Copy the picked move in the picked_nodes list
+                picked_nodes[picked_moves].fixed_index = picked_moves; // Assign an index to the node that will never change
+                picked_nodes[picked_moves].child_list = NULL;
+                picked_nodes[picked_moves].child_count = 0;
 
-        // Copy the old path from parentNode to child
-        for (int k = 0; k <= currentDepth; k++) {
-            newChildList[j]->path[k] = parentNode->path[k];
+                all_moves[i].available_move_count--; // Reduce the number of available move for the picked move
+                total_nb_of_move_available--; // Reduce the total number of available moves
+                picked_moves++;
+                break;
+            }
         }
-
-        // Add the current move index at the next depth level
-        newChildList[j]->path[currentDepth] = i;
-
-        newChildList[j]->move = allMoves[i];
-        newChildList[j]->move_index = i;
-        newChildList[j]->child_count = 0;
-        newChildList[j]->child_list = NULL;
-
-        j++;
     }
-    return newChildList;
 }
 
 
-void createTree(t_node* parentNode, t_move* allMoves, int totalMoves, int currentDepth, int maxDepth) {
-    if (currentDepth >= maxDepth || totalMoves == 0) {
-        return;
-    }
-    if (parentNode->move_index != -1){
-        parentNode->child_list = createChildList(allMoves, totalMoves, parentNode->child_count, currentDepth, parentNode);
-    }
-    for (int i = 0; i < parentNode->child_count; i++) {
-        createTree(parentNode->child_list[i], allMoves, totalMoves - 1, currentDepth + 1, maxDepth);
-    }
-    free(parentNode->path);
-}
 
-
-t_node* createRootWithMoves(t_move* allMoves, int move_count) {
-    t_node *root = (t_node *)malloc(sizeof(t_node));
+t_node* createRoot() {
+    /**
+     * Creates the root of the tree
+     *
+     * @return t_node* A pointer to the root
+     */
+    t_node* root = (t_node*)malloc(sizeof(t_node));
     strcpy(root->move.name, "Root");
-    root->move_index = -1;  // Root doesn't have a specific move
-    root->child_count = move_count;
-    root->child_list = (t_node **)malloc(move_count * sizeof(t_node *));
-    root->path = (int* )malloc(sizeof(int));
-    for (int i = 0; i < move_count; i++) {
-        root->child_list[i] = (t_node *)malloc(sizeof(t_node));
-        root->child_list[i]->path = (int* )malloc(2*sizeof(int));
-        root->child_list[i]->move = allMoves[i];
-        root->child_list[i]->move_index = i;
-        root->child_list[i]->child_count = 0;
-        root->child_list[i]->child_list = NULL;
-        root->child_list[i]->path[0] = -1;
-        root->child_list[i]->path[1] = root->child_list[i]->move_index;
-    }
-
+    root->fixed_index = -1;
+    root->child_list = NULL;
+    root->child_count = 0;
     return root;
 }
 
-void printTree(t_node* node, int level) {
-    if (node == NULL) {
+
+void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_depth, int* path, int nb_of_picked_moves) {
+    /**
+     * Creates a tree recursively from the picked nodes with a max depth
+     *
+     * @param t_node* node The current node we are at
+     * @param t_node* picked_nodes The list of picked moves
+     * @param int current_depth The current depth in the tree
+     * @param int max_depth The maximum depth of the tree
+     * @param int* path An array with the node's path
+     * @param int nb_of_picked_moves The number of picked moves at the start
+     * @return none
+     */
+    if (current_depth >= max_depth){
         return;
     }
-    for (int i = 0; i < level; i++) {
+
+    int child_count = nb_of_picked_moves - current_depth;
+    node->child_count = child_count;
+    node->child_list = (t_node**)malloc(child_count * sizeof(t_node*));
+
+    path[current_depth] = node->fixed_index; // Add the node index to it's path
+
+    int child_index = 0;
+    for (int i = 0; i < nb_of_picked_moves && child_index < child_count; i++) {
+        int current_index = picked_nodes[i].fixed_index;
+
+        int used_node = 0;// Check if the current index has already been used before
+        for (int j = 0; j <= current_depth; j++) {
+            if (path[j] == current_index) {
+                used_node = 1;
+            }
+        }
+
+        if (used_node!=1) { // If the node has not been used create the subtree of this node
+            node->child_list[child_index] = (t_node*)malloc(sizeof(t_node));
+            *node->child_list[child_index] = picked_nodes[i]; // Copy the picked node
+            createTree(node->child_list[child_index], picked_nodes, current_depth + 1, max_depth, path, nb_of_picked_moves); // Recursively build the tree
+            child_index++;
+        }
+    }
+}
+
+
+void printTree(t_node* node, int level) {
+    /**
+     * Prints the tree
+     *
+     * @param t_node* node The current node
+     * @param int level The current level in the tree
+     * @return none
+     */
+
+    if (node == NULL){
+        return; // Stops if the node is NULL
+    }
+
+    for (int i = 0; i < level; i++) { // Print the indentation of the tree
         if (i == level - 1) {
             printf("L__");
         } else {
             printf("|   ");
         }
     }
-    printf("(%d)", node->move_index);
-    printf("   (Path: ");
-    for (int i=0; i < level+1;i++){
-        printf("%d/", node->path[i]);
-    }
-    printf(")\n");
+    printf("(%d)\n", node->fixed_index); // Print the node index
+
     for (int i = 0; i < node->child_count; i++) {
-        printTree(node->child_list[i], level + 1);
+        printTree(node->child_list[i], level + 1); //Recursively print the child
     }
-}
-
-// Function to pick 9 random moves from a list
-t_move* pickNineMoves(t_move* listOfMoves) {
-    srand(time(NULL));
-    t_move* result = malloc(9 * sizeof(t_move));
-    int index = 0;
-    int total_available_moves = 0;
-
-    // Calculate total available moves
-    for (int i = 0; i <= 6; i++) {
-        total_available_moves += listOfMoves[i].available_move_count;
-    }
-
-    // Pick 9 moves randomly
-    for (int i = 0; i < 9; i++) {
-        if (total_available_moves == 0) {
-            printf("No more available moves\n");
-            break;
-        }
-
-        int random_choice = rand() % total_available_moves;
-        int cumulative_sum = 0;
-
-        for (int j = 0; j <= 6; j++) {
-            cumulative_sum += listOfMoves[j].available_move_count;
-
-            if (random_choice < cumulative_sum) {
-                result[index] = listOfMoves[j];
-                listOfMoves[j].available_move_count--;
-                total_available_moves--;
-                index++;
-                break;
-            }
-        }
-    }
-    return result;
 }
