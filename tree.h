@@ -21,6 +21,7 @@ typedef struct s_node {
     struct s_node** child_list;
     int child_count;
     t_localisation loc;
+    int cost;
 } t_node;
 
 // Tree functions

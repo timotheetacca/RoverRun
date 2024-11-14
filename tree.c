@@ -81,11 +81,6 @@ void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_d
     int child_count = nb_of_picked_moves - current_depth;
     node->child_count = child_count;
     node->child_list = (t_node**)malloc(child_count * sizeof(t_node*));
-    node->loc = parent_loc;
-    path[current_depth] = node->fixed_index; // Add the node index to it's path
-    if (node->fixed_index!=-1){
-        updateLocalisation(&(node->loc), node->node_move.move);
-    }
 
     if(isValidLocalisation(node->loc.pos,map.x_max,map.y_max) == 1){
         int child_index = 0;
