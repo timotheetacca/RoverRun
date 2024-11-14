@@ -77,15 +77,20 @@ void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_d
     //Update the localisation of the node
     node->loc = parent_loc;
 
-    //Update the cost of the node
-    node->cost = map.costs[node->loc.pos.y][node->loc.pos.x];
-
     path[current_depth] = node->fixed_index; // Add the node index to it's path
-    if (node->fixed_index!=-1){
-        updateLocalisation(&(node->loc), node->node_move.move);
+    if (node->fixed_index!=-1) {
+        updateLocalisation(&(node->loc), node->node_move.move); //Update Loc if we are not at the root
     }
 
-    if (current_depth >= max_depth){
+    if (isValidLocalisation(node->loc.pos , map.x_max, map.y_max) !=1){
+        node->cost = 10000; // Set cost to 10 000 if we go out of the map
+    }
+    else{
+        node->cost = map.costs[node->loc.pos.y][node->loc.pos.x]; //Get the cost of the move on the cost map
+
+    }
+
+    if (current_depth >= max_depth || node->cost >=10000){
         return;
     }
 
