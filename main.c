@@ -19,7 +19,7 @@ int main() {
             //Print the rover as "+" on the map
 
             if (rover.pos.x==j && rover.pos.y==i){
-                printf("+ ");
+                printf("%c ", print_rover(rover.ori));
             }
             else{
                 printf("%d ", map.soils[i][j]);
@@ -48,7 +48,7 @@ int main() {
             //Print the rover as "+" on the map
 
             if (rover.pos.x==j && rover.pos.y==i){
-                printf("+ ");
+                printf("%c ", print_rover(rover.ori));
             }
             else{
                 printf("%d ", map.soils[i][j]);

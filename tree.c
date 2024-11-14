@@ -108,7 +108,7 @@ void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_d
             }
         }
     }
-    
+
 }
 
 

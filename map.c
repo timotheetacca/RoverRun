@@ -301,3 +301,25 @@ void displayMap(t_map map)
     }
     return;
 }
+
+char print_rover(int ori){
+    char symbol;
+    switch (ori) {
+        case 0:
+            symbol = '^';
+            break;
+        case 1:
+            symbol = '>';
+            break;
+        case 2:
+            symbol = 'v';
+            break;
+        case 3:
+            symbol = '<';
+            break;
+        default :
+            symbol = '?';
+            break;
+    }
+    return symbol;
+}
