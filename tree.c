@@ -84,9 +84,7 @@ void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_d
     node->loc = parent_loc;
     path[current_depth] = node->fixed_index; // Add the node index to it's path
     if (node->fixed_index!=-1){
-        printf("Initial loc (%d,%d ori:%d)\nMove -> %s\n",parent_loc.pos.x,parent_loc.pos.y, node->loc.ori, node->node_move.name);
         updateLocalisation(&(node->loc), node->node_move.move);
-        printf("New loc (%d,%d ori:%d)\n\n",node->loc.pos.x,node->loc.pos.y, node->loc.ori);
     }
 
     int child_index = 0;
