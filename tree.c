@@ -87,24 +87,28 @@ void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_d
         updateLocalisation(&(node->loc), node->node_move.move);
     }
 
-    int child_index = 0;
-    for (int i = 0; i < nb_of_picked_moves && child_index < child_count; i++) {
-        int current_index = picked_nodes[i].fixed_index;
+    if(isValidLocalisation(node->loc.pos,map.x_max,map.y_max) == 1){
+        int child_index = 0;
+        for (int i = 0; i < nb_of_picked_moves && child_index < child_count; i++) {
 
-        int used_node = 0;// Check if the current index has already been used before
-        for (int j = 0; j <= current_depth; j++) {
-            if (path[j] == current_index) {
-                used_node = 1;
+            int current_index = picked_nodes[i].fixed_index;
+
+            int used_node = 0;// Check if the current index has already been used before
+            for (int j = 0; j <= current_depth; j++) {
+                if (path[j] == current_index) {
+                    used_node = 1;
+                }
+            }
+
+            if (used_node!=1) { // If the node has not been used create the subtree of this node
+                node->child_list[child_index] = (t_node*)malloc(sizeof(t_node));
+                *node->child_list[child_index] = picked_nodes[i]; // Copy the picked node
+                createTree(node->child_list[child_index], picked_nodes, current_depth + 1, max_depth, path, nb_of_picked_moves, map, node->loc); // Recursively build the tree
+                child_index++;
             }
         }
-
-        if (used_node!=1) { // If the node has not been used create the subtree of this node
-            node->child_list[child_index] = (t_node*)malloc(sizeof(t_node));
-            *node->child_list[child_index] = picked_nodes[i]; // Copy the picked node
-            createTree(node->child_list[child_index], picked_nodes, current_depth + 1, max_depth, path, nb_of_picked_moves, map, node->loc); // Recursively build the tree
-            child_index++;
-        }
     }
+    
 }
 
 
