@@ -101,7 +101,7 @@ void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_d
         if (used_node!=1) { // If the node has not been used create the subtree of this node
             node->child_list[child_index] = (t_node*)malloc(sizeof(t_node));
             *node->child_list[child_index] = picked_nodes[i]; // Copy the picked node
-            createTree(node->child_list[child_index], picked_nodes, current_depth + 1, max_depth, path, nb_of_picked_moves); // Recursively build the tree
+            createTree(node->child_list[child_index], picked_nodes, current_depth + 1, max_depth, path, nb_of_picked_moves, map, node->loc); // Recursively build the tree
             child_index++;
         }
     }
