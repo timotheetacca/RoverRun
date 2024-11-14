@@ -74,6 +74,17 @@ void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_d
      * @param t_localisation parent_loc Location of the parent in order to move the child
      * @return none
      */
+    //Update the localisation of the node
+    node->loc = parent_loc;
+
+    //Update the cost of the node
+    node->cost = map.costs[node->loc.pos.y][node->loc.pos.x];
+
+    path[current_depth] = node->fixed_index; // Add the node index to it's path
+    if (node->fixed_index!=-1){
+        updateLocalisation(&(node->loc), node->node_move.move);
+    }
+
     if (current_depth >= max_depth){
         return;
     }
@@ -127,7 +138,7 @@ void printTree(t_node* node, int level) {
             printf("|   ");
         }
     }
-    printf("(%d)\n", node->fixed_index); // Print the node index
+    printf("(%d) (cost: %d, move: %s)\n", node->fixed_index, node->cost, node->node_move.name); // Print the node index
 
     for (int i = 0; i < node->child_count; i++) {
         printTree(node->child_list[i], level + 1); //Recursively print the child

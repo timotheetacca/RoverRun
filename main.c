@@ -38,27 +38,6 @@ int main() {
     }
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-    rover.pos=UP(rover.pos);
-    isValidLocalisation(rover.pos, map.x_max, map.y_max);   //Check if x and y are not inverted
-    for (int i = 0; i < map.y_max; i++)
-    {
-        for (int j = 0; j < map.x_max; j++)
-        {
-            //Print the rover as "+" on the map
-
-            if (rover.pos.x==j && rover.pos.y==i){
-                printf("%c ", print_rover(rover.ori));
-            }
-            else{
-                printf("%d ", map.soils[i][j]);
-            }
-        }
-        printf("\n");
-    }
-    printf("Cost of new move : %d\n",  map.costs[rover.pos.y][rover.pos.x]);
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
     displayMap(map);
 
     t_node_move moves[7] = {
@@ -78,7 +57,7 @@ int main() {
     int path[9] = { -1 };
 
     createTree(root, picked_moves, 0, 5, path, 9, map, rover);
-    //printTree(root, 0);
+    printTree(root, 0);
 
 
     return 0;
