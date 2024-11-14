@@ -1,10 +1,11 @@
 #include "tree.h"
+#include "moves.h"
 
-void pickNMoves(t_move* all_moves, t_node* picked_nodes, int total_moves, int nb_of_move_to_pick) {
+void pickNMoves(t_node_move* all_moves, t_node* picked_nodes, int total_moves, int nb_of_move_to_pick) {
     /**
      * Picks N moves with decreasing probability each time a move is picked
      *
-     * @param t_move* all_moves A list of all available moves for the rover
+     * @param t_node_move* all_moves A list of all available moves for the rover
      * @param t_node* picked_nodes An array to store the selected moves as nodes
      * @param int total_moves The total number of available moves
      * @param int nb_of_move_to_pick The number of moves to pick
@@ -25,7 +26,7 @@ void pickNMoves(t_move* all_moves, t_node* picked_nodes, int total_moves, int nb
         for (int i = 0; i < total_moves; i++) {
             cumulative_sum  += all_moves[i].available_move_count;
             if (random_choice  < cumulative_sum  && all_moves[i].available_move_count > 0) {
-                picked_nodes[picked_moves].move = all_moves[i]; // Copy the picked move in the picked_nodes list
+                picked_nodes[picked_moves].node_move = all_moves[i]; // Copy the picked move in the picked_nodes list
                 picked_nodes[picked_moves].fixed_index = picked_moves; // Assign an index to the node that will never change
                 picked_nodes[picked_moves].child_list = NULL;
                 picked_nodes[picked_moves].child_count = 0;
@@ -41,22 +42,25 @@ void pickNMoves(t_move* all_moves, t_node* picked_nodes, int total_moves, int nb
 
 
 
-t_node* createRoot() {
+t_node* createRoot(t_localisation rover) {
     /**
      * Creates the root of the tree
      *
      * @return t_node* A pointer to the root
      */
     t_node* root = (t_node*)malloc(sizeof(t_node));
-    strcpy(root->move.name, "Root");
+    strcpy(root->node_move.name, "Root");
     root->fixed_index = -1;
     root->child_list = NULL;
     root->child_count = 0;
+    root->loc.pos.x = rover.pos.x;
+    root->loc.pos.y = rover.pos.y;
+    root->loc.ori = rover.ori;
     return root;
 }
 
 
-void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_depth, int* path, int nb_of_picked_moves) {
+void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_depth, int* path, int nb_of_picked_moves, t_map map, t_localisation parent_loc) {
     /**
      * Creates a tree recursively from the picked nodes with a max depth
      *
@@ -66,6 +70,8 @@ void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_d
      * @param int max_depth The maximum depth of the tree
      * @param int* path An array with the node's path
      * @param int nb_of_picked_moves The number of picked moves at the start
+     * @param t_map map Mars map for the rover
+     * @param t_localisation parent_loc Location of the parent in order to move the child
      * @return none
      */
     if (current_depth >= max_depth){
@@ -75,8 +81,13 @@ void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_d
     int child_count = nb_of_picked_moves - current_depth;
     node->child_count = child_count;
     node->child_list = (t_node**)malloc(child_count * sizeof(t_node*));
-
+    node->loc = parent_loc;
     path[current_depth] = node->fixed_index; // Add the node index to it's path
+    if (node->fixed_index!=-1){
+        printf("Initial loc (%d,%d ori:%d)\nMove -> %s\n",parent_loc.pos.x,parent_loc.pos.y, node->loc.ori, node->node_move.name);
+        updateLocalisation(&(node->loc), node->node_move.move);
+        printf("New loc (%d,%d ori:%d)\n\n",node->loc.pos.x,node->loc.pos.y, node->loc.ori);
+    }
 
     int child_index = 0;
     for (int i = 0; i < nb_of_picked_moves && child_index < child_count; i++) {
