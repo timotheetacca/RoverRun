@@ -16,8 +16,6 @@ int main() {
     {
         for (int j = 0; j < map.x_max; j++)
         {
-            //Print the rover as "+" on the map
-
             if (rover.pos.x==j && rover.pos.y==i){
                 printf("%c ", print_rover(rover.ori));
             }
@@ -57,7 +55,7 @@ int main() {
     int path[9] = { -1 };
 
     createTree(root, picked_moves, 0, 5, path, 9, map, rover);
-    //printTree(root, 0);
+    printTree(root, 0);
 
     int current_path[50];
     int best_path[50];
@@ -69,9 +67,10 @@ int main() {
     // Print the best path and its cost
     printf("\nBest path:\n");
     for (int i = 1; i < best_path_length; i++) {
-        printf("(%d)[%s]\n", best_path[i], picked_moves[i].node_move.name);
+        printf("(%d)[%s]\n", best_path[i], picked_moves[best_path[i]].node_move.name);
     }
     printf("\nTotal cost: %d", best_cost);
+
 
     return 0;
 }

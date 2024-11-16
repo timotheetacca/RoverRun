@@ -140,14 +140,14 @@ char *getMoveAsString(t_move move)
     return _moves[move];
 }
 
-t_localisation move(t_localisation loc, t_move move)
-{
-    t_localisation new_loc;
-    new_loc.pos = loc.pos;
-    new_loc.ori = rotate(loc.ori, move);
-    new_loc = translate(new_loc, move);
-    return new_loc;
+t_localisation move(t_localisation loc, t_move move) {
+    if (move == T_LEFT || move == T_RIGHT || move == U_TURN) {
+        loc.ori = rotate(loc.ori, move);
+    }
+    loc = translate(loc, move);
+    return loc;
 }
+
 
 void updateLocalisation(t_localisation *p_loc, t_move m)
 {

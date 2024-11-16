@@ -80,7 +80,7 @@ void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_d
     path[current_depth] = node->fixed_index; // Add the node index to the path
 
     if (node->fixed_index != -1) {
-        updateLocalisation(&(node->loc), node->node_move.move); // Update the location if not at the root
+            node->loc=move(node->loc, node->node_move.move); // Update the location if not at the root
     }
 
     int valid_move = 1;
@@ -107,7 +107,6 @@ void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_d
     } else {
         node->cost = map.costs[node->loc.pos.y][node->loc.pos.x]; // Get the cost from the map
     }
-
 
     if (current_depth >= max_depth || node->cost >=10000){
         return;
@@ -164,10 +163,10 @@ void printTree(t_node* node, int level) {
     }
 
     if (node->fixed_index == -1){
-        printf("(Root) (Cost: %d  Orientation :%d)\n", node->cost,node->loc.ori ,node->node_move.name); // Print the node index
+        printf("(Root) (Cost: %d  [x:%d  y:%d  ori:%d])\n", node->cost,node->loc.pos.x,node->loc.pos.y,node->loc.ori);
     }
     else{
-        printf("(%d) (Cost: %d  Orientation :%d  Move: %s)\n", node->fixed_index, node->cost,node->loc.ori ,node->node_move.name); // Print the node index
+        printf("(%d) (Cost: %d  [x:%d  y:%d  ori:%d]  Move: %s)\n", node->fixed_index, node->cost,node->loc.pos.x,node->loc.pos.y,node->loc.ori ,node->node_move.name);
     }
 
     for (int i = 0; i < node->child_count; i++) {
@@ -215,4 +214,3 @@ void findSmallestNode(t_node* node, int* current_path, int current_depth, int cu
                          best_path, best_path_length, best_cost_total);
     }
 }
-
