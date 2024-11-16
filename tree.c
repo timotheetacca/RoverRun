@@ -77,18 +77,37 @@ void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_d
     //Update the localisation of the node
     node->loc = parent_loc;
 
-    path[current_depth] = node->fixed_index; // Add the node index to it's path
-    if (node->fixed_index!=-1) {
-        updateLocalisation(&(node->loc), node->node_move.move); //Update Loc if we are not at the root
+    path[current_depth] = node->fixed_index; // Add the node index to the path
+
+    if (node->fixed_index != -1) {
+        updateLocalisation(&(node->loc), node->node_move.move); // Update the location if not at the root
     }
 
-    if (isValidLocalisation(node->loc.pos , map.x_max, map.y_max) !=1){
-        node->cost = 10000; // Set cost to 10 000 if we go out of the map
-    }
-    else{
-        node->cost = map.costs[node->loc.pos.y][node->loc.pos.x]; //Get the cost of the move on the cost map
+    int valid_move = 1;
+    if (node->node_move.move == F_20 || node->node_move.move == F_30) { // Handle the in-between moves for F_20 and F_30
+        int steps;
+        if (node->node_move.move == F_20) {
+            steps = 1;
+        } else if (node->node_move.move == F_30) {
+            steps = 2;
+        }
 
+        t_localisation temp_loc = node->loc;
+
+        for (int step = 0; step < steps; step++) {
+            temp_loc = move(temp_loc, F_10);
+            if (!isValidLocalisation(temp_loc.pos, map.x_max, map.y_max)) {
+                valid_move = 0;
+            }
+        }
     }
+
+    if (!isValidLocalisation(node->loc.pos, map.x_max, map.y_max) || valid_move == 0) {
+        node->cost = 10000; // Set cost at 10 000 for invalid positions
+    } else {
+        node->cost = map.costs[node->loc.pos.y][node->loc.pos.x]; // Get the cost from the map
+    }
+
 
     if (current_depth >= max_depth || node->cost >=10000){
         return;
@@ -138,12 +157,18 @@ void printTree(t_node* node, int level) {
 
     for (int i = 0; i < level; i++) { // Print the indentation of the tree
         if (i == level - 1) {
-            printf("L__");
+            printf(" L__");
         } else {
-            printf("|   ");
+            printf(" |   ");
         }
     }
-    printf("(%d) (cost: %d, move: %s)\n", node->fixed_index, node->cost, node->node_move.name); // Print the node index
+
+    if (node->fixed_index == -1){
+        printf("(Root) (Cost: %d  Orientation :%d)\n", node->cost,node->loc.ori ,node->node_move.name); // Print the node index
+    }
+    else{
+        printf("(%d) (Cost: %d  Orientation :%d  Move: %s)\n", node->fixed_index, node->cost,node->loc.ori ,node->node_move.name); // Print the node index
+    }
 
     for (int i = 0; i < node->child_count; i++) {
         printTree(node->child_list[i], level + 1); //Recursively print the child
