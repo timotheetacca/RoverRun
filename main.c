@@ -57,8 +57,21 @@ int main() {
     int path[9] = { -1 };
 
     createTree(root, picked_moves, 0, 5, path, 9, map, rover);
-    printTree(root, 0);
+    //printTree(root, 0);
 
+    int current_path[50];
+    int best_path[50];
+    int best_path_length = 0;
+    int best_cost = -1;
+
+    findSmallestNode(root, current_path, 0, 0, best_path, &best_path_length, &best_cost);
+
+    // Print the best path and its cost
+    printf("\nBest path:\n");
+    for (int i = 1; i < best_path_length; i++) {
+        printf("(%d)[%s]\n", best_path[i], picked_moves[i].node_move.name);
+    }
+    printf("\nTotal cost: %d", best_cost);
 
     return 0;
 }

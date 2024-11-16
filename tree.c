@@ -174,3 +174,45 @@ void printTree(t_node* node, int level) {
         printTree(node->child_list[i], level + 1); //Recursively print the child
     }
 }
+
+
+void findSmallestNode(t_node* node, int* current_path, int current_depth, int current_cost, int* best_path, int* best_path_length, int* best_cost_total) {
+    /**
+     * Recursively finds the smallest node at the end of the tree
+     * If the 2 nodes has the same end cost, retuen the one with the smallest path cost
+     *
+     * @param t_node* node The current node
+     * @param int* current_path The path from the root to the current node
+     * @param int current_depth The depth of the current node
+     * @param int current_cost The total cost of the path to the current node
+     * @param int* best_path The best path found
+     * @param int* best_path_length The length of the best path
+     * @param int* best_cost The total cost of the best path
+     * @return none
+     */
+    current_path[current_depth] = node->fixed_index;
+
+    if (node->child_count == 0) {
+        current_cost += node->cost;
+
+        if (*best_cost_total == -1 || current_cost < *best_cost_total ||
+            (current_cost == *best_cost_total && current_depth + 1 < *best_path_length)) { // Compare the current path cost with the best cost
+            *best_cost_total = current_cost;
+            *best_path_length = current_depth + 1;
+            for (int i = 0; i <= current_depth; i++) { //copy the path
+                best_path[i] = current_path[i];
+            }
+        }
+        return;
+    }
+
+    // Add the current node's cost to the total cost of the path
+    current_cost += node->cost;
+
+    // Recursively call all the child nodes
+    for (int i = 0; i < node->child_count; i++) {
+        findSmallestNode(node->child_list[i], current_path, current_depth + 1, current_cost,
+                         best_path, best_path_length, best_cost_total);
+    }
+}
+
