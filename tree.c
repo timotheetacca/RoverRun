@@ -108,7 +108,7 @@ void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_d
         node->cost = map.costs[node->loc.pos.y][node->loc.pos.x]; // Get the cost from the map
     }
 
-    if (current_depth >= max_depth || node->cost >=10000){
+    if (current_depth >= max_depth || node->cost >=10000 || node->cost ==0){
         return;
     }
 
