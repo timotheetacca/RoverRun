@@ -55,7 +55,7 @@ int main() {
     int path[9] = { -1 };
 
     createTree(root, picked_moves, 0, 5, path, 9, map, rover);
-    printTree(root, 0);
+    printTree(root, 0, map);
 
     int current_path[50];
     int best_path[50];

@@ -81,7 +81,7 @@ void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_d
 
     if (node->fixed_index != -1) {
         //If the case is an erg square
-        if(map.soils[node->loc.pos.y][node->loc.pos.x] == 2) {
+        if(map.soils[node->loc.pos.y][node->loc.pos.x] == ERG) {
             if(node->node_move.move == F_20){
                 node->loc = move(node->loc, F_10);
             }
@@ -95,7 +95,7 @@ void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_d
     }
 
     if (node->loc.pos.y >= 0 && node->loc.pos.y < map.y_max && node->loc.pos.x >= 0 && node->loc.pos.x < map.x_max
-        && map.soils[node->loc.pos.y][node->loc.pos.x] >= 5) { //Check for slopes and correcte position
+        && map.soils[node->loc.pos.y][node->loc.pos.x] >= 5) { //Check for slopes and change rover's position
         switch (map.soils[node->loc.pos.y][node->loc.pos.x]) {
             case 5: // North
                 node->loc.pos.y = node->loc.pos.y  - 1;
@@ -114,7 +114,6 @@ void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_d
         }
     }
 
-
     int valid_move = 1;
     if (node->node_move.move == F_20 || node->node_move.move == F_30) { // Handle the in-between moves for F_20 and F_30
         int steps;
@@ -126,7 +125,7 @@ void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_d
 
         t_localisation temp_loc = node->loc;
 
-        for (int step = 0; step < steps; step++) {
+        for (int step = 0; step < steps; step++) { // Move forward step times to check if we passed over a crevasse
             temp_loc = move(temp_loc, F_10);
             if (!isValidLocalisation(temp_loc.pos, map.x_max, map.y_max)) {
                 valid_move = 0;
@@ -149,7 +148,7 @@ void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_d
     node->child_count = child_count;
 
     //If a case if a reg case
-    if(map.soils[node->loc.pos.x][node->loc.pos.y] == 3 ) {
+    if(map.soils[node->loc.pos.x][node->loc.pos.y] == REG ) {
         if(node->child_count > 4){
             node->child_count = 4;
         }
@@ -174,7 +173,8 @@ void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_d
             if (used_node!=1) { // If the node has not been used create the subtree of this node
                 node->child_list[child_index] = (t_node*)malloc(sizeof(t_node));
                 *node->child_list[child_index] = picked_nodes[i]; // Copy the picked node
-                createTree(node->child_list[child_index], picked_nodes, current_depth + 1, max_depth, path, nb_of_picked_moves, map, node->loc); // Recursively build the tree
+                createTree(node->child_list[child_index], picked_nodes, current_depth + 1,
+                           max_depth, path, nb_of_picked_moves, map, node->loc); // Recursively build the tree
                 child_index++;
             }
         }
@@ -183,7 +183,7 @@ void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_d
 }
 
 
-void printTree(t_node* node, int level) {
+void printTree(t_node* node, int level, t_map map) {
     /**
      * Prints the tree
      *
@@ -198,22 +198,31 @@ void printTree(t_node* node, int level) {
 
     for (int i = 0; i < level; i++) { // Print the indentation of the tree
         if (i == level - 1) {
-            printf(" L__");
-        } else {
-            printf(" |   ");
+            printf("%c%c%c",195,196,196);
+        }
+        else {
+            printf("%c   ",179);
         }
     }
 
     if (node->fixed_index == -1){
-        printf("(Root) (Cost: %d  [x:%d  y:%d  ori:%d])\n", node->cost,node->loc.pos.x,node->loc.pos.y,node->loc.ori);
+        printf("(Root) (Cost: %d  [x:%d  y:%d  ori:%d  land:%d])\n", node->cost,node->loc.pos.x,
+               node->loc.pos.y,node->loc.ori, map.soils[node->loc.pos.y][node->loc.pos.x]);
     }
     else{
-            printf("(%d) (Cost: %d  [x:%d  y:%d  ori:%d]  Move: %s)\n", node->fixed_index, node->cost,node->loc.pos.x,node->loc.pos.y,node->loc.ori ,node->node_move.name);
-
+        if (node->cost == 10000){
+            printf("(%d) (Cost: %d  [x:%d  y:%d  ori:%d  land: Rover lost]  Move: %s)\n", node->fixed_index,
+                   node->cost,node->loc.pos.x,node->loc.pos.y,node->loc.ori,node->node_move.name);
+        }
+        else {
+            printf("(%d) (Cost: %d  [x:%d  y:%d  ori:%d  land:%d]  Move: %s)\n", node->fixed_index,
+                   node->cost, node->loc.pos.x, node->loc.pos.y, node->loc.ori,
+                   map.soils[node->loc.pos.y][node->loc.pos.x], node->node_move.name);
+        }
     }
 
     for (int i = 0; i < node->child_count; i++) {
-        printTree(node->child_list[i], level + 1); //Recursively print the child
+        printTree(node->child_list[i], level + 1, map); //Recursively print the child
     }
 }
 

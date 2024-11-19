@@ -289,6 +289,18 @@ void displayMap(t_map map)
                     case CREVASSE:
                         sprintf(c, "%c%c%c",219,219,219);
                         break;
+                    case SLOPE_NORTH:
+                        sprintf(c, "%c%c%c",202,202,202);
+                        break;
+                    case SLOPE_EAST:
+                        sprintf(c, "%c%c%c",204,204,204);
+                        break;
+                    case SLOPE_SOUTH:
+                        sprintf(c, "%c%c%c",203,203,203);
+                        break;
+                    case SLOPE_WEST:
+                        sprintf(c, "%c%c%c",185,185,185);
+                        break;
                     default:
                         strcpy(c, "???");
                         break;
