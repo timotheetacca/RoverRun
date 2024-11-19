@@ -5,7 +5,7 @@
 ---
 
 <h1 align="center">
-    <img alt="Rover Run Logo" width="200px" src="https://github.com/user-attachments/assets/7c6a0520-c4cc-4454-b476-6ccf38f0e322">
+    <img alt="Rover Run Logo" width="600px" src="https://github.com/user-attachments/assets/7c6a0520-c4cc-4454-b476-6ccf38f0e322">
 </h1>
 
 ## Introduction  
