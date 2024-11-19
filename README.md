@@ -1,15 +1,22 @@
+# [Rover Run!](https://github.com/timotheetacca/RoverRun)  
+**2024-L2 EFREI**  
+**Authors**: Timothée Tacca, Thomas Loesch & Julien Oudin  
 
-# [Rover Run!](https://github.com/timotheetacca/RoverRun)
-> ###### 2024-L2 EFREI TACCA Timothée, LOESCH Thomas & OUDIN Julien
+---
 
 <h1 align="center">
-    <img alt="Logo" width="200px" src="[https://raw.githubusercontent.com/cookiecutter/cookiecutter/3ac078356adf5a1a72042dfe72ebfa4a9cd5ef38/logo/cookiecutter_medium.png](https://github.com/user-attachments/assets/7c6a0520-c4cc-4454-b476-6ccf38f0e322)">
+    <img alt="Rover Run Logo" width="200px" src="https://github.com/user-attachments/assets/7c6a0520-c4cc-4454-b476-6ccf38f0e322">
 </h1>
 
-2028: A very intense solar storm has just hit... The MARC - MArs Rover Cartograph rover, which was carrying out its mission very well, has suffered a malfunction. Its programming, guidance and movement systems have been seriously affected...
+## Introduction  
 
-The ESTF, Efrei Space Task Force, has called on programming experts to design new travel software for MARC. Your mission is to use this travel software to bring MARC back to a base station where it can be refurbished.
+**2028:** A very intense solar storm has struck Mars, causing a critical failure in the MARC (*MArs Rover Cartograph*).  
+MARC’s programming, guidance, and movement systems have been severely impacted.  
 
+The **ESTF** (*Efrei Space Task Force*) has enlisted programming experts to design new travel software to guide MARC back to its base station for refurbishment.  
+Your mission is to leverage this travel software to save MARC!  
+
+---
 
 ## Download
 You have 2 options to install our project : 
