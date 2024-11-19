@@ -23,7 +23,7 @@ You can also directly install the latest release of our project from [here]https
 ![roverrun_download](https://github.com/user-attachments/assets/fd7f8b86-abb8-42d0-bb09-34335277fece)
 
 
-Ensure `main.c` is in the same directory as the other .c files and the fold `maps` and execute `main.c`.
+Ensure `main.c` is in the same directory as the other .c files and the folder `maps` then execute `main.c`.
 
 
 You can still print the tree for the rover's path by deleting the `//` from `printTree(root, 0, map)` in `main.c`.
