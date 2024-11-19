@@ -80,8 +80,20 @@ void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_d
     path[current_depth] = node->fixed_index; // Add the node index to the path
 
     if (node->fixed_index != -1) {
+        //If the case is an erg square
+        if(map.soils[node->loc.pos.y][node->loc.pos.x] == 2) {
+            if(node->node_move.move == F_20){
+                node->loc = move(node->loc, F_10);
+            }
+            else if(node->node_move.move == F_30){
+                node->loc = move(node->loc, F_20);
+            }
+        }
+        else {
             node->loc=move(node->loc, node->node_move.move); // Update the location if not at the root
+        }
     }
+
 
     int valid_move = 1;
     if (node->node_move.move == F_20 || node->node_move.move == F_30) { // Handle the in-between moves for F_20 and F_30
@@ -102,6 +114,7 @@ void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_d
         }
     }
 
+
     if (!isValidLocalisation(node->loc.pos, map.x_max, map.y_max) || valid_move == 0) {
         node->cost = 10000; // Set cost at 10 000 for invalid positions
     } else {
@@ -114,9 +127,18 @@ void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_d
 
     int child_count = nb_of_picked_moves - current_depth;
     node->child_count = child_count;
+
+    //If a case if a reg case
+    if(map.soils[node->loc.pos.x][node->loc.pos.y] == 3 ) {
+        if(node->child_count > 4){
+            node->child_count = 4;
+        }
+    }
+
     node->child_list = (t_node**)malloc(child_count * sizeof(t_node*));
 
     if(isValidLocalisation(node->loc.pos,map.x_max,map.y_max) == 1){
+
         int child_index = 0;
         for (int i = 0; i < nb_of_picked_moves && child_index < child_count; i++) {
 
@@ -166,7 +188,8 @@ void printTree(t_node* node, int level) {
         printf("(Root) (Cost: %d  [x:%d  y:%d  ori:%d])\n", node->cost,node->loc.pos.x,node->loc.pos.y,node->loc.ori);
     }
     else{
-        printf("(%d) (Cost: %d  [x:%d  y:%d  ori:%d]  Move: %s)\n", node->fixed_index, node->cost,node->loc.pos.x,node->loc.pos.y,node->loc.ori ,node->node_move.name);
+            printf("(%d) (Cost: %d  [x:%d  y:%d  ori:%d]  Move: %s)\n", node->fixed_index, node->cost,node->loc.pos.x,node->loc.pos.y,node->loc.ori ,node->node_move.name);
+
     }
 
     for (int i = 0; i < node->child_count; i++) {
