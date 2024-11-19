@@ -94,6 +94,26 @@ void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_d
         }
     }
 
+    if (node->loc.pos.y >= 0 && node->loc.pos.y < map.y_max && node->loc.pos.x >= 0 && node->loc.pos.x < map.x_max
+        && map.soils[node->loc.pos.y][node->loc.pos.x] >= 5) { //Check for slopes and correcte position
+        switch (map.soils[node->loc.pos.y][node->loc.pos.x]) {
+            case 5: // North
+                node->loc.pos.y = node->loc.pos.y  - 1;
+                break;
+            case 6: //East
+                node->loc.pos.x = node->loc.pos.x  + 1;
+                break;
+            case 7: //South
+                node->loc.pos.y = node->loc.pos.y + 1;
+                break;
+            case 8: //West
+                node->loc.pos.x = node->loc.pos.x -1;
+                break;
+            default:
+                break;
+        }
+    }
+
 
     int valid_move = 1;
     if (node->node_move.move == F_20 || node->node_move.move == F_30) { // Handle the in-between moves for F_20 and F_30
