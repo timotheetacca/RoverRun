@@ -40,6 +40,33 @@ void pickNMoves(t_node_move* all_moves, t_node* picked_nodes, int total_moves, i
     }
 }
 
+void check_slopes(t_node* node,t_map map){
+    /**
+      * Check for slopes effect and "conveyor belt" effect
+      *
+      * @param t_node* node The current node we are at
+      * @param t_map map Mars map for the rover
+      * @return none
+      */
+    while (isValidLocalisation(node->loc.pos, map.x_max, map.y_max) && map.soils[node->loc.pos.y][node->loc.pos.x] >= 5) {
+        switch (map.soils[node->loc.pos.y][node->loc.pos.x]) { //Check for slopes and change rover's position
+            case 5: // North
+                node->loc.pos.y = node->loc.pos.y  - 1;
+                break;
+            case 6: //East
+                node->loc.pos.x = node->loc.pos.x  + 1;
+                break;
+            case 7: //South
+                node->loc.pos.y = node->loc.pos.y + 1;
+                break;
+            case 8: //West
+                node->loc.pos.x = node->loc.pos.x -1;
+                break;
+            default:
+                break;
+        }
+    }
+}
 
 
 t_node* createRoot(t_localisation rover) {
@@ -74,45 +101,23 @@ void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_d
      * @param t_localisation parent_loc Location of the parent in order to move the child
      * @return none
      */
-    //Update the localisation of the node
-    node->loc = parent_loc;
-
+    node->loc = parent_loc; //Update the localisation of the node
     path[current_depth] = node->fixed_index; // Add the node index to the path
 
     if (node->fixed_index != -1) {
-        //If the case is an erg square
-        if(map.soils[node->loc.pos.y][node->loc.pos.x] == ERG) {
+        if(map.soils[node->loc.pos.y][node->loc.pos.x] == ERG) { //If the case is an erg square
             if(node->node_move.move == F_20){
                 node->loc = move(node->loc, F_10);
             }
             else if(node->node_move.move == F_30){
                 node->loc = move(node->loc, F_20);
             }
-        }
-        else {
-            node->loc=move(node->loc, node->node_move.move); // Update the location if not at the root
-        }
-    }
-
-    if (node->loc.pos.y >= 0 && node->loc.pos.y < map.y_max && node->loc.pos.x >= 0 && node->loc.pos.x < map.x_max
-        && map.soils[node->loc.pos.y][node->loc.pos.x] >= 5) { //Check for slopes and change rover's position
-        switch (map.soils[node->loc.pos.y][node->loc.pos.x]) {
-            case 5: // North
-                node->loc.pos.y = node->loc.pos.y  - 1;
-                break;
-            case 6: //East
-                node->loc.pos.x = node->loc.pos.x  + 1;
-                break;
-            case 7: //South
-                node->loc.pos.y = node->loc.pos.y + 1;
-                break;
-            case 8: //West
-                node->loc.pos.x = node->loc.pos.x -1;
-                break;
-            default:
-                break;
+        }else {
+            node->loc=move(node->loc, node->node_move.move); // Update the location of created node if not at the root
         }
     }
+    t_localisation loc_before_slopes = node->loc;
+    check_slopes(node,map);
 
     int valid_move = 1;
     if (node->node_move.move == F_20 || node->node_move.move == F_30) { // Handle the in-between moves for F_20 and F_30
@@ -122,9 +127,7 @@ void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_d
         } else if (node->node_move.move == F_30) {
             steps = 2;
         }
-
-        t_localisation temp_loc = node->loc;
-
+        t_localisation temp_loc = loc_before_slopes;
         for (int step = 0; step < steps; step++) { // Move forward step times to check if we passed over a crevasse
             temp_loc = move(temp_loc, F_10);
             if (!isValidLocalisation(temp_loc.pos, map.x_max, map.y_max)) {
@@ -133,12 +136,14 @@ void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_d
         }
     }
 
-
-    if (!isValidLocalisation(node->loc.pos, map.x_max, map.y_max) || valid_move == 0) {
-        node->cost = 10000; // Set cost at 10 000 for invalid positions
+    if ((!isValidLocalisation(node->loc.pos, map.x_max, map.y_max) || valid_move == 0)) {
+            node->cost = 10000; // Set cost at 10 000 for invalid positions
     } else {
         node->cost = map.costs[node->loc.pos.y][node->loc.pos.x]; // Get the cost from the map
     }
+
+
+
 
     if (current_depth >= max_depth || node->cost >=10000 || node->cost ==0){
         return;
@@ -147,7 +152,7 @@ void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_d
     int child_count = nb_of_picked_moves - current_depth;
     node->child_count = child_count;
 
-    //If a case if a reg case
+    //If a case is a reg case
     if(map.soils[node->loc.pos.x][node->loc.pos.y] == REG ) {
         if(node->child_count > 4){
             node->child_count = 4;
@@ -225,7 +230,6 @@ void printTree(t_node* node, int level, t_map map) {
         printTree(node->child_list[i], level + 1, map); //Recursively print the child
     }
 }
-
 
 void findSmallestNode(t_node* node, int* current_path, int current_depth, int current_cost, int* best_path, int* best_path_length, int* best_cost_total) {
     /**

@@ -27,8 +27,9 @@ typedef struct s_node {
 
 void pickNMoves(t_node_move* all_moves, t_node* picked_nodes, int total_moves, int n);
 t_node* createRoot(t_localisation rover);
+void check_slopes(t_node* node,t_map map);
 void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_depth, int* path, int nb_picked_moves, t_map map, t_localisation parent_loc);
 void printTree(t_node* node, int level, t_map map);
-void findSmallestNode(t_node* node, int* current_path, int current_depth, int current_cost, int* best_path, int* best_path_length, int* best_cost);
+void findSmallestNode(t_node* node, int* current_path, int current_depth, int current_cost, int* best_path, int* best_path_length, int* best_cost_total);
 
 #endif // UNTITLED1_TREE_H
