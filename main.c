@@ -1,17 +1,45 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "map.h"
 #include "tree.h"
 #include "loc.h"
 #include "moves.h"
 
 int main() {
+
+// Initialisation of the random number to spawn the robot
+    srand(time(NULL));
+    rand();
+
+// Creation of the map
     t_map map = createMapFromFile("..\\maps\\example1.map");
     printf("Map created with dimensions %d x %d\n", map.y_max, map.x_max);
 
     t_localisation rover;
-    rover.pos.x=4;
-    rover.pos.y=6;
-    rover.ori=NORTH;
+// Chooses a location as long as it spawn on invalid spot
+    do {
+        rover.pos.x = (rand() % 2) * (rand() % map.x_max);
+        rover.pos.y = (rand() % 2) * (rand() % map.y_max);
+    } while (map.soils[rover.pos.x][rover.pos.y] == 4);
+
+
+    if (rover.pos.x != 0 && rover.pos.x != map.x_max){
+        if (rover.pos.y == 0){
+            rover.ori = SOUTH;
+        }
+        else{
+            rover.ori = NORTH;
+        }
+    }
+    else {
+        if (rover.pos.x == 0) {
+            rover.ori = EAST;
+        } else {
+            rover.ori = WEST;
+        }
+    }
+    printf("rover x : %d, rover y : %d\n", rover.pos.x, rover.pos.y);
+
     for (int i = 0; i < map.y_max; i++)
     {
         for (int j = 0; j < map.x_max; j++)
