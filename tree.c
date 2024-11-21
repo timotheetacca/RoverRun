@@ -143,17 +143,16 @@ void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_d
     }
 
 
-
-
     if (current_depth >= max_depth || node->cost >=10000 || node->cost ==0){
         return;
     }
-
+    
+    //Node creation if the tree isn't stopped
     int child_count = nb_of_picked_moves - current_depth;
     node->child_count = child_count;
 
     //If a case is a reg case
-    if(map.soils[node->loc.pos.x][node->loc.pos.y] == REG ) {
+    if(map.soils[node->loc.pos.y][node->loc.pos.x] == REG ) {
         if(node->child_count > 4){
             node->child_count = 4;
         }
