@@ -20,7 +20,7 @@ int main() {
     do {
         rover.pos.x = (rand() % 2) * (rand() % map.x_max);
         rover.pos.y = (rand() % 2) * (rand() % map.y_max);
-    } while (map.soils[rover.pos.x][rover.pos.y] == 4);
+    } while (map.soils[rover.pos.y][rover.pos.x] == 4);
 
 
     if (rover.pos.x != 0 && rover.pos.x != map.x_max){
