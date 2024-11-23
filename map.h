@@ -61,5 +61,7 @@ t_map createMapFromFile(char *);
  */
 void displayMap(t_map, t_localisation rover);
 char print_rover(int);
+void printCost(t_map map);
+void printSoils(t_map map, t_localisation rover);
 
 #endif //UNTITLED1_MAP_H

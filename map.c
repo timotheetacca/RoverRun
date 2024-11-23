@@ -363,3 +363,29 @@ char print_rover(int ori){
     return symbol;
 }
 
+void printCost(t_map map){
+    for (int i = 0; i < map.y_max; i++)
+    {
+        for (int j = 0; j < map.x_max; j++)
+        {
+            printf("%-5d ", map.costs[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+void printSoils(t_map map, t_localisation rover){
+    for (int i = 0; i < map.y_max; i++)
+    {
+        for (int j = 0; j < map.x_max; j++)
+        {
+            if (rover.pos.x==j && rover.pos.y==i){
+                printf("%c ", print_rover(rover.ori));
+            }
+            else{
+                printf("%d ", map.soils[i][j]);
+            }
+        }
+        printf("\n");
+    }
+}
