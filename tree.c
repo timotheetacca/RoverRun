@@ -1,7 +1,7 @@
 #include "tree.h"
 #include "moves.h"
 
-void pickNMoves(t_node_move* all_moves, t_node* picked_nodes, int total_moves, int nb_of_move_to_pick, int total_move_count) {
+int pickNMoves(t_node_move* all_moves, t_node* picked_nodes, int total_moves, int nb_of_move_to_pick) {
     /**
      * Picks N moves with decreasing probability each time a move is picked
      *
@@ -9,14 +9,17 @@ void pickNMoves(t_node_move* all_moves, t_node* picked_nodes, int total_moves, i
      * @param t_node* picked_nodes An array to store the selected moves as nodes
      * @param int total_moves The total number of available moves
      * @param int nb_of_move_to_pick The number of moves to pick
-     * @param int total_move_count The total number of move count
      * @return none
      */
     srand(time(NULL));
+    int total_nb_of_move_available = 0;
 
+    for (int i = 0; i < total_moves; i++) { // Count the total number of moves across all_moves
+        total_nb_of_move_available += all_moves[i].available_move_count;
+    }
     int picked_moves = 0;
-    while (picked_moves < nb_of_move_to_pick && total_move_count > 0) {
-        int random_choice  = rand() % total_move_count;
+    while (picked_moves < nb_of_move_to_pick && total_nb_of_move_available > 0) {
+        int random_choice  = rand() % total_nb_of_move_available;
         int cumulative_sum  = 0;
 
         for (int i = 0; i < total_moves; i++) {
@@ -26,14 +29,14 @@ void pickNMoves(t_node_move* all_moves, t_node* picked_nodes, int total_moves, i
                 picked_nodes[picked_moves].fixed_index = picked_moves; // Assign an index to the node that will never change
                 picked_nodes[picked_moves].child_list = NULL;
                 picked_nodes[picked_moves].child_count = 0;
-
                 all_moves[i].available_move_count--; // Reduce the number of available move for the picked move
-                total_move_count--;
+                total_nb_of_move_available--;
                 picked_moves++;
                 break;
             }
         }
     }
+    return total_nb_of_move_available;
 }
 
 void check_slopes(t_node* node,t_map map){

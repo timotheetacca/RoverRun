@@ -7,15 +7,16 @@
 
 int main() {
 
-// Initialisation of the random number to spawn the robot
+    // Initialisation of the random number to spawn the robot
     srand(time(NULL));
     rand();
 
-// Creation of the map
+    // Creation of the map
     t_map map = createMapFromFile("..\\maps\\example1.map");
     printf("Map created with dimensions %d x %d\n\n", map.y_max, map.x_max);
 
     t_localisation rover;
+
     // Chooses a location as long as it spawn on invalid spot
     int side = rand() % 4;
     printf("side  : %d\n", side);
@@ -70,12 +71,12 @@ int main() {
     };
     t_node picked_moves[9];
     int base_reached = 0;
-    int total_move_count=100;
+    int total_nb_of_move_available=100;
 
-    while (total_move_count>=0 && base_reached==0) {
-        pickNMoves(moves, picked_moves, 7, 9, total_move_count);
+    while (base_reached == 0 && total_nb_of_move_available >0) {
+        total_nb_of_move_available = pickNMoves(moves, picked_moves, 7, 9);
 
-        /* Print picked moves
+        /* Print picked moves delete comments to see
         printf("\nPicked Moves:\n");
         for (int i = 0; i < 9; i++) {
             printf("(%d)[%s]\n", picked_moves[i].fixed_index, picked_moves[i].node_move.name);
@@ -117,7 +118,7 @@ int main() {
     if (base_reached) {
         printf("Congrats! The rover reached the base\n");
     } else {
-        printf("Game Over. The rover did not reach the base.\n");
+        printf("Game Over. The rover did not reach the base\n");
     }
 
     return 0;
