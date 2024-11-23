@@ -16,27 +16,35 @@ int main() {
     printf("Map created with dimensions %d x %d\n\n", map.y_max, map.x_max);
 
     t_localisation rover;
-// Chooses a location as long as it spawn on invalid spot
-    do {
-        rover.pos.x = (rand() % 2) * (rand() % map.x_max);
-        rover.pos.y = (rand() % 2) * (rand() % map.y_max);
-    } while (map.soils[rover.pos.y][rover.pos.x] == 4);
-
-
-    if (rover.pos.x != 0 && rover.pos.x != map.x_max){
-        if (rover.pos.y == 0){
+    // Chooses a location as long as it spawn on invalid spot
+    int side = rand() % 4;
+    printf("side  : %d\n", side);
+    switch (side) {
+        case 0: // top
+            rover.pos.x = rand() % map.x_max;
+            rover.pos.y = 0;
             rover.ori = SOUTH;
-        }
-        else{
-            rover.ori = NORTH;
-        }
-    }
-    else {
-        if (rover.pos.x == 0) {
-            rover.ori = EAST;
-        } else {
+            break;
+        case 1: // right
+            rover.pos.x = map.x_max - 1;
+            rover.pos.y = rand() % map.y_max;
             rover.ori = WEST;
-        }
+            break;
+        case 2: // bottom
+            rover.pos.x = rand() % map.x_max - 1;
+            rover.pos.y = map.y_max - 1;
+            rover.ori = NORTH;
+            break;
+        case 3: // left
+            rover.pos.x = 0;
+            rover.pos.y = rand() % map.y_max;
+            rover.ori = EAST;
+            break;
+        default: // error
+            printf("An error has occurred");
+            rover.pos.x = 0;
+            rover.pos.y = 0;
+            rover.ori = EAST;
     }
 
 
@@ -104,10 +112,6 @@ int main() {
 
         // Display the updated map
         displayMap(map, rover);
-
-        if (!base_reached) {
-            printf("\nBase not reached. Picking new moves...\n");
-        }
     }
 
     if (base_reached) {
