@@ -6,6 +6,8 @@
 #define UNTITLED1_MAP_H
 
 #define COST_UNDEF 65535
+#include "loc.h"
+
 /**
  * @brief Enum for the possible soils of the map
  */
@@ -57,7 +59,7 @@ t_map createMapFromFile(char *);
  * @brief display the map with characters
  * @param map : the map to display
  */
-void displayMap(t_map);
+void displayMap(t_map, t_localisation rover);
 char print_rover(int);
 
 #endif //UNTITLED1_MAP_H

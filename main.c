@@ -38,7 +38,7 @@ int main() {
             rover.ori = WEST;
         }
     }
-    printf("rover x : %d, rover y : %d\n", rover.pos.x, rover.pos.y);
+    printf("Rover(x: %d y: %d)\n", rover.pos.x, rover.pos.y);
 
     for (int i = 0; i < map.y_max; i++)
     {
@@ -64,7 +64,8 @@ int main() {
     }
 
 
-    displayMap(map);
+    printf("\n");
+    displayMap(map, rover);
 
     t_node_move moves[7] = {
             {22, "Move forward 10 m", F_10},
@@ -77,16 +78,21 @@ int main() {
     };
     t_node picked_moves[9];
     pickNMoves(moves, picked_moves, 7, 9);
+    printf("\nPicked Moves:\n");
+    for (int i = 0; i < 9; i++) {
+        printf("(%d)[%s]\n",picked_moves[i].fixed_index,picked_moves[i].node_move.name);
+    }
+    printf("\n");
+
 
     t_node* root = createRoot(rover);
 
     int path[9] = { -1 };
 
     createTree(root, picked_moves, 0, 5, path, 9, map, rover);
-    printTree(root, 0, map);
 
-    int current_path[50];
-    int best_path[50];
+    t_node* current_path[50];
+    t_node* best_path[50];
     int best_path_length = 0;
     int best_cost = -1;
 
@@ -95,9 +101,11 @@ int main() {
     // Print the best path and its cost
     printf("\nBest path:\n");
     for (int i = 1; i < best_path_length; i++) {
-        printf("(%d)[%s]\n", best_path[i], picked_moves[best_path[i]].node_move.name);
+        printf("(%d)[%s]\n", best_path[i]->fixed_index, best_path[i]->node_move.name);
     }
     printf("\nTotal cost: %d", best_cost);
+
+    printTree(root, 0, map);
 
 
     return 0;

@@ -252,7 +252,7 @@ t_map createTrainingMap()
     return createMapFromFile("..\\maps\\training.map");
 }
 
-void displayMap(t_map map)
+void displayMap(t_map map, t_localisation rover)
 {
     /** the rules for display are :
      * display all soils with 3x3 characters
@@ -265,51 +265,78 @@ void displayMap(t_map map)
             for (int j = 0; j < map.x_max; j++)
             {
                 char c[4];
-                switch (map.soils[i][j])
+                // Check if this position matches the rover's position
+                if (i == rover.pos.y && j == rover.pos.x)
                 {
-                    case BASE_STATION:
-                        if (rep==1)
-                        {
-                            strcpy(c, " B ");
-                        }
-                        else
-                        {
-                            strcpy(c, "   ");
-                        }
-                        break;
-                    case PLAIN:
-                        strcpy(c, "---");
-                        break;
-                    case ERG:
-                        strcpy(c, "~~~");
-                        break;
-                    case REG:
-                        strcpy(c, "^^^");
-                        break;
-                    case CREVASSE:
-                        sprintf(c, "%c%c%c",219,219,219);
-                        break;
-                    case SLOPE_NORTH:
-                        sprintf(c, "%c%c%c",202,202,202);
-                        break;
-                    case SLOPE_EAST:
-                        sprintf(c, "%c%c%c",204,204,204);
-                        break;
-                    case SLOPE_SOUTH:
-                        sprintf(c, "%c%c%c",203,203,203);
-                        break;
-                    case SLOPE_WEST:
-                        sprintf(c, "%c%c%c",185,185,185);
-                        break;
-                    default:
-                        strcpy(c, "???");
-                        break;
+                    // Display the rover symbol
+                    char rover_char = ' ';
+                    switch (rover.ori)
+                    {
+                        case NORTH:
+                            printf( "%c%c%c",30,30,30);
+                            break;
+                        case EAST:
+                            printf( "%c%c%c",16,16,16);
+                            break;
+                        case SOUTH:
+                            printf( "%c%c%c",31,31,31);
+                            break;
+                        case WEST:
+                            printf( "%c%c%c",17,17,17);
+                            break;
+                        default:
+                            printf("?R?");
+                            break;
+                    }
+
                 }
-                printf("%s", c);
+                else
+                {
+                    switch (map.soils[i][j])
+                    {
+                        case BASE_STATION:
+                            if (rep == 1)
+                            {
+                                strcpy(c, " B ");
+                            }
+                            else
+                            {
+                                strcpy(c, "   ");
+                            }
+                            break;
+                        case PLAIN:
+                            strcpy(c, "---");
+                            break;
+                        case ERG:
+                            strcpy(c, "~~~");
+                            break;
+                        case REG:
+                            strcpy(c, "^^^");
+                            break;
+                        case CREVASSE:
+                            sprintf(c, "%c%c%c", 219, 219, 219);
+                            break;
+                        case SLOPE_NORTH:
+                            sprintf(c, "%c%c%c", 202, 202, 202); // ╩ symbol
+                            break;
+                        case SLOPE_EAST:
+                            sprintf(c, "%c%c%c", 204, 204, 204); // ╠ symbol
+                            break;
+                        case SLOPE_SOUTH:
+                            sprintf(c, "%c%c%c", 203, 203, 203); // ╦ symbol
+                            break;
+                        case SLOPE_WEST:
+                            sprintf(c, "%c%c%c", 185, 185, 185); // ╣ symbol
+                            break;
+                        default:
+                            strcpy(c, "???");
+                            break;
+                    }
+                    printf("%s", c);
+                }
             }
             printf("\n");
         }
-
     }
     return;
 }

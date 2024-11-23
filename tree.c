@@ -230,21 +230,21 @@ void printTree(t_node* node, int level, t_map map) {
     }
 }
 
-void findSmallestNode(t_node* node, int* current_path, int current_depth, int current_cost, int* best_path, int* best_path_length, int* best_cost_total) {
+void findSmallestNode(t_node* node, t_node** current_path, int current_depth, int current_cost, t_node** best_path, int* best_path_length, int* best_cost_total) {
     /**
      * Recursively finds the smallest node at the end of the tree
      * If the 2 nodes has the same end cost, retuen the one with the smallest path cost
      *
      * @param t_node* node The current node
-     * @param int* current_path The path from the root to the current node
+     * @param t_node** current_path The path from the root to the current node
      * @param int current_depth The depth of the current node
      * @param int current_cost The total cost of the path to the current node
-     * @param int* best_path The best path found
+     * @param t_node** best_path The best path found
      * @param int* best_path_length The length of the best path
      * @param int* best_cost The total cost of the best path
      * @return none
      */
-    current_path[current_depth] = node->fixed_index;
+    current_path[current_depth] = node;
 
     if (node->child_count == 0) {
         current_cost += node->cost;
