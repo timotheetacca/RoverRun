@@ -19,7 +19,6 @@ int main() {
 
     // Chooses a location as long as it spawn on invalid spot
     int side = rand() % 4;
-    printf("side  : %d\n", side);
     do{
     switch (side) {
         case 0: // top
@@ -50,12 +49,13 @@ int main() {
         }
     }while (map.soils[rover.pos.y][rover.pos.x] == 4);
 
-    printf("Rover spawned at (x: %d, y: %d) facing %d\n", rover.pos.x, rover.pos.y, rover.ori);
+
+    printf("Rover spawned at (x: %d, y: %d) on side %d facing %d\n", rover.pos.x, rover.pos.y,side,rover.ori);
 
 
     // printf the costs and the soil, aligned left 5 digits (given functions)
-    printSoils(map, rover);
-    printCost(map);
+    //printSoils(map, rover);
+    //printCost(map);
 
 
     printf("\n");
@@ -109,7 +109,7 @@ int main() {
                 base_reached = 1;
             }
         }
-        printf("\nTotal cost: %d\n\n\n\n\n", best_cost);
+        printf("\nTotal cost: %d\n\n\n\n\n\n", best_cost);
 
         //printTree(root,0,map);
 
