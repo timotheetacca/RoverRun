@@ -119,18 +119,23 @@ void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_d
     check_slopes(node,map);
 
     int valid_move = 1;
-    if (node->node_move.move == F_20 || node->node_move.move == F_30) { // Handle the in-between moves for F_20 and F_30
-        int steps;
-        if (node->node_move.move == F_20) {
-            steps = 1;
-        } else if (node->node_move.move == F_30) {
-            steps = 2;
-        }
+    if (node->node_move.move == F_20 || node->node_move.move == F_30) {
+        int steps = (node->node_move.move == F_20) ? 1 : 2;
         t_localisation temp_loc = loc_before_slopes;
-        for (int step = 0; step < steps; step++) { // Move forward step times to check if we passed over a crevasse
+
+        for (int step = 0; step < steps; step++) {
             temp_loc = move(temp_loc, F_10);
-            if (!isValidLocalisation(temp_loc.pos, map.x_max, map.y_max)) {
+
+            if (!isValidLocalisation(temp_loc.pos, map.x_max, map.y_max)) { // Check if rover is in the map while F20/30
                 valid_move = 0;
+                break;
+            }
+
+            if (map.soils[temp_loc.pos.y][temp_loc.pos.x] == BASE_STATION) {
+                node->cost = 0; // Reached base
+                node->loc = temp_loc; // Set rover loc to base position
+                valid_move = 1;
+                break;
             }
         }
     }

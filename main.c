@@ -47,7 +47,9 @@ int main() {
             rover.pos.y = 0;
             rover.ori = EAST;
     }
-
+    rover.pos.x = 2;
+    rover.pos.y = 6;
+    rover.ori = 0;
 
     printf("Rover spawned at (x: %d, y: %d) facing %d\n", rover.pos.x, rover.pos.y, rover.ori);
 
