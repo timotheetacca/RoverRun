@@ -46,10 +46,8 @@ int main() {
             rover.pos.x = 0;
             rover.pos.y = 0;
             rover.ori = EAST;
-    }
-    rover.pos.x = 2;
-    rover.pos.y = 6;
-    rover.ori = 0;
+        }
+    }while (map.soils[rover.pos.y][rover.pos.x] == 4);
 
     printf("Rover spawned at (x: %d, y: %d) facing %d\n", rover.pos.x, rover.pos.y, rover.ori);
 
@@ -112,6 +110,7 @@ int main() {
         }
         printf("\nTotal cost: %d\n\n\n\n\n", best_cost);
 
+        //printTree(root,0,map);
 
         // Display the updated map
         displayMap(map, rover);

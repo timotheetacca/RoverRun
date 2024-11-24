@@ -115,34 +115,45 @@ void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_d
             node->loc=move(node->loc, node->node_move.move); // Update the location of created node if not at the root
         }
     }
-    t_localisation loc_before_slopes = node->loc;
+    t_localisation loc_before_slopes = parent_loc;
     check_slopes(node,map);
 
     int valid_move = 1;
     if (node->node_move.move == F_20 || node->node_move.move == F_30) {
-        int steps = (node->node_move.move == F_20) ? 1 : 2;
-        t_localisation temp_loc = loc_before_slopes;
+        int steps = 0;
+        if (node->node_move.move == F_20) {
+            steps = 1;
+        } else if (node->node_move.move == F_30) {
+            steps = 2;
+        }
 
+        t_localisation temp_loc = loc_before_slopes;
         for (int step = 0; step < steps; step++) {
             temp_loc = move(temp_loc, F_10);
 
-            if (!isValidLocalisation(temp_loc.pos, map.x_max, map.y_max)) { // Check if rover is in the map while F20/30
-                valid_move = 0;
+            // Check if out of bounds
+            if (!isValidLocalisation(temp_loc.pos, map.x_max, map.y_max)) {
+                valid_move = 0; // Invalid move due to going out of bounds
                 break;
             }
 
+            // Check if the rover has reached the base station
             if (map.soils[temp_loc.pos.y][temp_loc.pos.x] == BASE_STATION) {
-                node->cost = 0; // Reached base
-                node->loc = temp_loc; // Set rover loc to base position
                 valid_move = 1;
+                break;
+            }
+
+            // Check if passing through a crevasse
+            if (map.soils[temp_loc.pos.y][temp_loc.pos.x] == CREVASSE) {
+                valid_move = 0; // Invalid move due to crevasse
                 break;
             }
         }
     }
-
     if ((!isValidLocalisation(node->loc.pos, map.x_max, map.y_max) || valid_move == 0)) {
             node->cost = 10000; // Set cost at 10 000 for invalid positions
-    } else {
+    }
+    else {
         node->cost = map.costs[node->loc.pos.y][node->loc.pos.x]; // Get the cost from the map
     }
 
