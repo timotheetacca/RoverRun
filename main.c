@@ -74,6 +74,13 @@ int main() {
     int base_reached = 0;
     int total_nb_of_move_available=100;
 
+    int display_path_visual[map.y_max][map.x_max];
+    for (int i = 0; i < map.y_max; i++) {
+        for (int j = 0; j < map.x_max; j++) {
+            display_path_visual[i][j] = 0;
+        }
+    }
+
     while (base_reached == 0 && total_nb_of_move_available >0) {
         total_nb_of_move_available = pickNMoves(moves, picked_moves, 7, 9);
 
@@ -94,6 +101,9 @@ int main() {
         t_node* best_path[50];
         int best_path_length = 0;
         int best_cost = -1;
+        int size_list_loc = 5;
+        t_localisation *list_loc = (t_localisation *)malloc(size_list_loc * sizeof(t_localisation));
+        list_loc[0] = rover;
 
         findSmallestNode(root, current_path, 0, 0, best_path, &best_path_length, &best_cost);
 
@@ -104,17 +114,24 @@ int main() {
             rover.pos.x = best_path[i]->loc.pos.x;
             rover.pos.y = best_path[i]->loc.pos.y;
             rover.ori = best_path[i]->loc.ori;
+            list_loc[i].pos = rover.pos;
+            list_loc[i].ori = rover.ori;
 
             if (map.soils[best_path[i]->loc.pos.y][best_path[i]->loc.pos.x] == BASE_STATION) {
                 base_reached = 1;
+                if (i != best_path_length){
+                    size_list_loc = i+1;
+                    realloc(list_loc, size_list_loc * sizeof(t_localisation));
+                }
             }
         }
         printf("\nTotal cost: %d\n\n\n\n\n\n\n", best_cost);
+        displayPathVisual(map, display_path_visual, list_loc, size_list_loc);
 
         //printTree(root,0,map);
 
         // Display the updated map
-        displayMap(map, rover);
+        //displayMap(map, rover);
     }
 
     if (base_reached) {

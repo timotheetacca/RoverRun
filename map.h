@@ -63,5 +63,7 @@ void displayMap(t_map, t_localisation rover);
 char print_rover(int);
 void printCost(t_map map);
 void printSoils(t_map map, t_localisation rover);
+void displayPathVisual(t_map map, int (*display_path_visual)[map.y_max], t_localisation *list_pos, int length_list);
+
 
 #endif //UNTITLED1_MAP_H

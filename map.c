@@ -389,3 +389,66 @@ void printSoils(t_map map, t_localisation rover){
         printf("\n");
     }
 }
+
+void displayPathVisual(t_map map,int (*display_path_visual)[map.y_max], t_localisation *list_pos, int length_list) {
+    for (int i = 0; i < length_list; i++) {  //the length of the list
+        if (list_pos[i].ori == NORTH || list_pos[i].ori == SOUTH) {
+            display_path_visual[list_pos[i].pos.y][list_pos[i].pos.x] = 1;
+        } else {
+            display_path_visual[list_pos[i].pos.y][list_pos[i].pos.x] = 2;
+        }
+        if (i != 0) {
+            int diff_pos_y = list_pos[i].pos.y - list_pos[i - 1].pos.y;
+            int diff_pos_x = list_pos[i].pos.x - list_pos[i - 1].pos.x;
+
+            // Fill gaps in the path
+            if (abs(diff_pos_y) > 1) {
+                int step = diff_pos_y / abs(diff_pos_y);
+                for (int k = 1; k < abs(diff_pos_y); k++) {
+                    display_path_visual[list_pos[i - 1].pos.y + k * step][list_pos[i].pos.x] = 1;
+                }
+            }
+            if (abs(diff_pos_x) > 1) {
+                int step = diff_pos_x / abs(diff_pos_x);
+                for (int k = 1; k < abs(diff_pos_x); k++) {
+                    display_path_visual[list_pos[i].pos.y][list_pos[i - 1].pos.x + k * step] = 2;
+                }
+            }
+        }
+
+    for (int i = 0; i < map.y_max; i++) {
+        for (int j = 0; j < map.x_max; j++) {
+            if (display_path_visual[i][j] == 3){
+                display_path_visual[i][j] = 4;
+            }
+        }
+    }
+
+    }
+    display_path_visual[list_pos[length_list - 1].pos.y][list_pos[length_list - 1].pos.x] = 3;
+    for (int i = 0; i < map.y_max; i++) {
+        for (int j = 0; j < map.x_max; j++) {
+            switch (display_path_visual[i][j]) {
+                case 1:
+                    printf(" | ");
+                    break;
+                case 2:
+                    printf("===");
+                    break;
+                case 3:
+                    printf(" %c ", print_rover(list_pos[length_list-1].ori));
+                    break;
+                case 4:
+                    printf(" + ");
+                    break;
+                default:
+                    printf("...");
+                    break;
+            }
+        }
+        printf("\n");
+    }
+}
+
+
+
