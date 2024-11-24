@@ -109,7 +109,7 @@ int main() {
                 base_reached = 1;
             }
         }
-        printf("\nTotal cost: %d\n\n\n\n\n\n", best_cost);
+        printf("\nTotal cost: %d\n\n\n\n\n\n\n", best_cost);
 
         //printTree(root,0,map);
 
