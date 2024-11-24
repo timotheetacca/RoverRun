@@ -20,6 +20,7 @@ int main() {
     // Chooses a location as long as it spawn on invalid spot
     int side = rand() % 4;
     printf("side  : %d\n", side);
+    do{
     switch (side) {
         case 0: // top
             rover.pos.x = rand() % map.x_max;
