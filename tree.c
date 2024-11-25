@@ -139,6 +139,8 @@ void createTree(t_node* node, t_node* picked_nodes, int current_depth, int max_d
 
             // Check if the rover has reached the base station
             if (map.soils[temp_loc.pos.y][temp_loc.pos.x] == BASE_STATION) {
+                node->loc=temp_loc;
+                node->cost=0;
                 valid_move = 1;
                 break;
             }
