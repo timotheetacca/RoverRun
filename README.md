@@ -4,10 +4,6 @@
 
 ---
 
-<h1 align="center">
-    <img alt="Rover Run Logo" width="600px" src="https://github.com/user-attachments/assets/7c6a0520-c4cc-4454-b476-6ccf38f0e322">
-</h1>
-
 ## Introduction  
 
 **2028:** A very intense solar storm has struck Mars, causing a critical failure in the MARC (*MArs Rover Cartograph*).  
